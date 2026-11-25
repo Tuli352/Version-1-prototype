@@ -1,0 +1,250 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style></head><body>
+<title>Worth It Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one phone-width column, centred on larger screens. Check screen -> result screen -> decision screen. */
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --ink:#0F1A2B; --muted:#5A6678; --line:#D9DFE8;
+  --accent:#0B6B5D; --accent-ink:#FFFFFF; --accent-soft:#DDF1EC;
+  --good:#12805C; --warn:#A8670F; --bad:#B8322A;
+  --good-soft:#DDF3EA; --warn-soft:#FBEBD0; --bad-soft:#F9DEDB;
+  --display:'Familjen Grotesk','Avenir Next','Segoe UI',system-ui,sans-serif;
+  --body:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D131B; --surface:#161E29; --ink:#E9EFF6; --muted:#9AA7B8; --line:#273243;
+  --accent:#3FD1B5; --accent-ink:#06211B; --accent-soft:#12302B;
+  --good:#4CD39E; --warn:#F0B35A; --bad:#FF8A80;
+  --good-soft:#12302A; --warn-soft:#352A14; --bad-soft:#3A1D1B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D131B; --surface:#161E29; --ink:#E9EFF6; --muted:#9AA7B8; --line:#273243;
+  --accent:#3FD1B5; --accent-ink:#06211B; --accent-soft:#12302B;
+  --good:#4CD39E; --warn:#F0B35A; --bad:#FF8A80;
+  --good-soft:#12302A; --warn-soft:#352A14; --bad-soft:#3A1D1B; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 40px}
+main{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:28px;letter-spacing:-.01em}
+h2{font-size:20px}
+h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-family:var(--body);font-weight:600}
+p{margin:0}
+.top{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--display);font-weight:700;font-size:22px;border:0;background:none;color:var(--ink);padding:4px 0;cursor:pointer;display:flex;align-items:center;gap:8px}
+.logo i{width:22px;height:22px;background:var(--accent);display:inline-block;border-radius:5px 5px 5px 0;clip-path:polygon(0 0,100% 0,100% 100%,30% 100%,0 70%)}
+.ver{font-size:12px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+label,.lbl{font-weight:600;font-size:15px}
+.hint{color:var(--muted);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 14px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.field{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--bg);overflow:hidden}
+.field span{padding:0 12px;color:var(--muted);font-weight:600;font-size:14px}
+.field input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:20px;font-weight:600;padding:12px 12px 12px 0;font-variant-numeric:tabular-nums;outline:none}
+.field:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.btn{border:0;border-radius:12px;font:inherit;font-weight:600;font-size:16px;padding:14px 16px;min-height:48px;cursor:pointer;width:100%}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:transparent;color:var(--bad);border:1px solid var(--line)}
+.btn:focus-visible,.chip:focus-visible,.logo:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.err{color:var(--bad);font-size:14px;min-height:20px}
+.buckets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bucket{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;padding:12px 6px;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:64px}
+.bucket b{font-family:var(--display);font-size:20px}
+.bucket small{color:var(--muted);font-size:12px}
+.bucket[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+.bignum{font-family:var(--display);font-size:44px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bignum small{font-size:16px;font-weight:600;color:var(--muted);margin-left:4px;letter-spacing:0}
+.pill{display:inline-flex;align-self:flex-start;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:600}
+.pill.good{background:var(--good-soft);color:var(--good)}.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.bar{height:14px;border-radius:999px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.bar>div{height:100%;border-radius:999px}
+.bar .good{background:var(--good)}.bar .warn{background:var(--warn)}.bar .bad{background:var(--bad)}
+.split{display:flex;justify-content:space-between;gap:12px;font-size:14px;font-variant-numeric:tabular-nums}
+.split span:last-child{font-weight:600;text-align:right}
+.stores{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.stores div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.alt{display:flex;flex-direction:column;gap:6px;background:var(--bg);border-radius:10px;padding:12px}
+.alt .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.alt .t b{font-family:var(--display);font-size:17px}
+.link{background:none;border:0;color:var(--accent);font:inherit;font-weight:600;padding:6px 0;text-align:left;cursor:pointer;text-decoration:underline;min-height:32px}
+.actions{display:flex;flex-direction:column;gap:10px}
+.note{font-size:12px;color:var(--muted)}
+.toast{background:var(--accent-soft);color:var(--ink);border:1px solid var(--accent);border-radius:12px;padding:12px 14px;font-size:14px}
+.notif{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:12px 14px;box-shadow:0 6px 20px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:2px}
+.notif b{font-size:13px}.notif span{font-size:14px}
+.done{text-align:left;padding:8px 0;display:flex;flex-direction:column;gap:14px}
+.obs{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:16px}
+.obs>div{background:var(--surface);color:var(--ink);border-radius:16px;padding:16px;width:100%;max-width:440px;max-height:80vh;display:flex;flex-direction:column;gap:10px}
+.obs pre{margin:0;overflow:auto;font-size:12px;line-height:1.5;background:var(--bg);padding:10px;border-radius:8px;white-space:pre-wrap;flex:1}
+.obs .r{display:flex;gap:8px}.obs .r .btn{min-height:42px;font-size:14px}
+@media (prefers-reduced-motion:no-preference){.card,.actions{animation:in .25s ease-out}@keyframes in{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+
+<main id="app"></main>
+<div id="obsroot"></div>
+
+<script>
+const VERSION = 1;
+const CATS = {
+  Jacket:   {alt:'Bomber-cut jacket', mat:'polyester-blend shell, same cut'},
+  Dress:    {alt:'Midi dress',        mat:'viscose blend, same length'},
+  Jeans:    {alt:'Straight-fit jeans',mat:'98% cotton denim, same fit'},
+  Sneakers: {alt:'Canvas sneakers',   mat:'canvas upper, rubber sole'},
+  Top:      {alt:'Cotton jersey top', mat:'cotton jersey, regular fit'}
+};
+const STORES = [['Marina Outlet',1.10],['Souq Basics',0.95],['Campus Closet',1.05]];
+const BUCKETS = [{id:'1-5',label:'1–5',sub:'a few times',lo:1,hi:5},{id:'6-15',label:'6–15',sub:'now and then',lo:6,hi:15},{id:'15+',label:'15+',sub:'a lot',lo:15,hi:null}];
+
+let S, LOG, T0, timer;
+function fresh(){ S={screen:'check',cat:'Jacket',price:'',allowance:'400',wears:'',bucket:null,decision:null,toast:'',err:''}; LOG=[]; T0=Date.now(); log('session started','v'+VERSION); }
+function log(ev,detail){ LOG.push({t:((Date.now()-T0)/1000).toFixed(1),ev,detail:detail||''}); }
+const $=s=>document.querySelector(s);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const aed=n=>'AED '+fmt(n);
+
+function compute(){
+  const p=+S.price, a=+S.allowance||0;
+  const pct=a>0?p/a*100:100, left=a-p;
+  const level=pct>=25?'bad':pct>=10?'warn':'good';
+  let cpwText, cpwNum, cpwHi;
+  if(VERSION===1){ const w=+S.wears; cpwNum=p/w; cpwHi=cpwNum; cpwText=aed(cpwNum); }
+  else{
+    const b=BUCKETS.find(x=>x.id===S.bucket);
+    if(b.hi===null){ cpwHi=p/15; cpwNum=p/15; cpwText='AED '+fmt(p/15)+' or less'; }
+    else{ cpwHi=p/b.lo; cpwNum=p/b.hi; cpwText='AED '+fmt(p/b.hi)+'–'+fmt(p/b.lo); }
+    if(b.id==='6-15') cpwHi=p/6;
+  }
+  const vlevel = cpwHi<=10?'good':cpwHi<=25?'warn':'bad';
+  const vtext = {good:'Good value per wear',warn:'Think twice',bad:'Poor value per wear'}[vlevel];
+  const altPrice=Math.max(5,Math.round(p*0.65/5)*5);
+  return {p,a,pct,left,level,cpwText,vlevel,vtext,altPrice,save:p-altPrice,cat:CATS[S.cat]};
+}
+
+function render(){
+  const app=$('#app');
+  const head=`<div class="top"><button class="logo" id="logo" aria-label="Worth It?"><i></i>Worth It?</button><span class="ver">Prototype v${VERSION}</span></div>`;
+  if(S.screen==='check') app.innerHTML=head+checkHTML();
+  else if(S.screen==='result') app.innerHTML=head+resultHTML();
+  else app.innerHTML=head+doneHTML();
+  bind();
+}
+
+function checkHTML(){
+  const chips=Object.keys(CATS).map(c=>`<button class="chip" data-cat="${c}" aria-pressed="${S.cat===c}">${c}</button>`).join('');
+  const wears = VERSION===1
+   ? `<div><label for="wears">How many times do you expect to wear it?</label>
+      <div class="field" style="margin-top:6px"><input id="wears" type="number" inputmode="numeric" min="1" placeholder="e.g. 10" value="${S.wears}"><span>wears</span></div></div>`
+   : `<div><div class="lbl" id="wl">How many times will you wear it?</div>
+      <p class="hint" style="margin:2px 0 8px">Think of a similar item you bought before. How many times did you really wear it?</p>
+      <div class="buckets" role="group" aria-labelledby="wl">${BUCKETS.map(b=>`<button class="bucket" data-b="${b.id}" aria-pressed="${S.bucket===b.id}"><b>${b.label}</b><small>${b.sub}</small></button>`).join('')}</div></div>`;
+  return `<section class="card">
+    <h1>Is it worth it?</h1>
+    <p class="hint">Check an item before you buy it.</p>
+    <div><div class="lbl" style="margin-bottom:8px">What is it?</div><div class="chips" role="group" aria-label="Item type">${chips}</div></div>
+    <div class="row2">
+      <div><label for="price">Price</label><div class="field"><span>AED</span><input id="price" type="number" inputmode="decimal" min="1" placeholder="120" value="${S.price}"></div></div>
+      <div><label for="allow">Allowance left this month</label><div class="field"><span>AED</span><input id="allow" type="number" inputmode="decimal" min="1" value="${S.allowance}"></div></div>
+    </div>
+    ${wears}
+    <div class="err" id="err" role="alert">${S.err}</div>
+    <button class="btn primary" id="go">Check if it's worth it</button>
+  </section>`;
+}
+
+function resultHTML(){
+  const r=compute();
+  const altName=r.cat.alt;
+  const cpw=`<section class="card"><h3>Cost per wear</h3>
+      <div class="bignum">${r.cpwText.replace(/^AED /,'<small style="margin:0 6px 0 0">AED</small>')}</div>
+      <span class="pill ${r.vlevel}">${r.vtext}</span>
+      <p class="hint">${aed(r.p)} ÷ ${VERSION===1?(+S.wears)+' wears':'your estimate'}</p></section>`;
+  const allow=`<section class="card"><h3>Your allowance</h3>
+      <div class="bar" role="img" aria-label="${Math.round(r.pct)} percent of allowance left"><div class="${r.level}" style="width:${Math.min(100,r.pct)}%"></div></div>
+      <div class="split"><span>This item uses</span><span>${Math.round(r.pct)}% of what's left</span></div>
+      <div class="split"><span>Left after buying</span><span>${r.left>=0?aed(r.left):'−'+aed(-r.left)}</span></div></section>`;
+  const stores=`<section class="card"><h3>Same item elsewhere</h3><div class="stores">
+      ${STORES.map(s=>`<div><span>${s[0]}</span><span>${aed(r.p*s[1])}</span></div>`).join('')}</div></section>`;
+  const altV1=`<section class="card"><h3>Cheaper, similar option</h3><div class="alt">
+      <div class="t"><b>${altName}</b><b>${aed(r.altPrice)}</b></div>
+      <div class="hint">Save ${aed(r.save)} · rated 4.4 / 5</div></div>
+      <button class="btn ghost" data-act="swap">Choose this instead</button></section>`;
+  const altV2=`<section class="card"><h3>Cheaper, similar option</h3><div class="alt">
+      <div class="t"><b>${altName}</b><b>${aed(r.altPrice)}</b></div>
+      <div class="hint"><b>Why similar:</b> ${r.cat.mat}. Rated 4.4 / 5 from 312 reviews. ${aed(r.save)} cheaper.</div>
+      <button class="link" data-act="seeitem">See this item</button></div>
+      <button class="btn ghost" data-act="swap">Choose this instead</button></section>`;
+  const toast = S.toast?`<div class="toast" role="status">${S.toast}</div>`:'';
+  const waitLbl = VERSION===1?'Wait 24 hours':'Wait 24 hours and remind me';
+  const actions=`<div class="actions">${toast}
+      <button class="btn primary" data-act="wait">${waitLbl}</button>
+      <button class="btn ghost" data-act="drop">Skip it</button>
+      <button class="btn warn" data-act="buy">Buy anyway</button>
+      <button class="link" data-act="back">Change my answers</button>
+      <p class="note">Prices, ratings and alternatives are example data for this test.</p></div>`;
+  const head=`<h1>${r.vtext}</h1>`;
+  return VERSION===1 ? head+cpw+allow+stores+altV1+actions : allow+cpw+altV2+actions;
+}
+
+function doneHTML(){
+  const m={buy:['Decision saved: buy it.','Enjoy it. Come back and check the next one.'],
+           wait:['Decision saved: wait.',VERSION===1?'Come back in 24 hours and decide again.':'We will remind you tomorrow at 9:00.'],
+           drop:['Decision saved: skip it.','That keeps the money in your allowance.'],
+           swap:['Decision saved: cheaper option.','You picked the cheaper, similar item.']}[S.decision];
+  const notif = (VERSION===2 && S.decision==='wait')?`<div class="notif"><b>Worth It? · tomorrow 9:00</b><span>Still want the ${S.cat.toLowerCase()}?</span></div>`:'';
+  return `<section class="done"><h1>${m[0]}</h1><p>${m[1]}</p>${notif}<button class="btn primary" id="again">Check another item</button></section>`;
+}
+
+function bind(){
+  document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;log('item type',S.cat);syncInputs();render()});
+  document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{S.bucket=b.dataset.b;log('wears bucket',S.bucket);syncInputs();render()});
+  const price=$('#price'), allow=$('#allow'), wears=$('#wears');
+  if(price){ price.oninput=()=>S.price=price.value; price.onchange=()=>log('price entered',price.value); }
+  if(allow){ allow.oninput=()=>S.allowance=allow.value; allow.onchange=()=>log('allowance edited',allow.value); }
+  if(wears){ let f=0; wears.onfocus=()=>{f=Date.now();log('wears question reached')}; wears.oninput=()=>S.wears=wears.value;
+    wears.onblur=()=>{ if(f) log('wears answered', (wears.value||'blank')+' after '+((Date.now()-f)/1000).toFixed(1)+'s') } }
+  const go=$('#go'); if(go) go.onclick=()=>{
+    syncInputs();
+    if(!(+S.price>0)){S.err='Enter the price of the item.';return render()}
+    if(!(+S.allowance>0)){S.err='Enter how much allowance you have left.';return render()}
+    if(VERSION===1 && !(+S.wears>0)){S.err='Enter how many times you expect to wear it.';return render()}
+    if(VERSION===2 && !S.bucket){S.err='Pick how many times you will wear it.';return render()}
+    S.err='';S.screen='result';S.toast='';log('result viewed',aed(+S.price));render();window.scrollTo(0,0);
+  };
+  document.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>act(b.dataset.act));
+  const ag=$('#again'); if(ag) ag.onclick=()=>{ const keep=LOG; fresh(); LOG=keep.concat([{t:'-',ev:'--- new check ---',detail:''}]); T0=Date.now(); render(); };
+  const logo=$('#logo'); if(logo) logo.onclick=()=>{ clearTimeout(timer); logo._n=(logo._n||0)+1; timer=setTimeout(()=>{if(logo)logo._n=0},900); if(logo._n>=3){logo._n=0;obs()} };
+}
+function syncInputs(){ const p=$('#price'),a=$('#allow'),w=$('#wears'); if(p)S.price=p.value; if(a)S.allowance=a.value; if(w)S.wears=w.value; }
+
+function act(a){
+  if(a==='back'){S.screen='check';log('went back to change answers');return render()}
+  if(a==='seeitem'){S.toast='Example item page. Not available in this prototype.';log('tapped See this item');return render()}
+  if(a==='wait'){log('tapped wait 24h')}
+  if(a==='swap'){log('tapped cheaper option')}
+  S.decision=a; S.screen='done'; log('FINAL DECISION',({buy:'buy',wait:'wait',drop:'drop',swap:'swap'})[a]); render(); window.scrollTo(0,0);
+}
+
+function obs(){
+  const text=LOG.map(l=>`${String(l.t).padStart(5)}s  ${l.ev}${l.detail?': '+l.detail:''}`).join('\n')||'(empty)';
+  $('#obsroot').innerHTML=`<div class="obs" role="dialog" aria-label="Observer log"><div><h2>Observer log</h2>
+    <p class="hint">For the team member running the test. Participants should not see this.</p>
+    <pre id="logtxt">${text.replace(/</g,'&lt;')}</pre>
+    <div class="r"><button class="btn ghost" id="cp">Copy log</button><button class="btn ghost" id="rs">Reset session</button><button class="btn primary" id="cl">Close</button></div></div></div>`;
+  $('#cl').onclick=()=>$('#obsroot').innerHTML='';
+  $('#rs').onclick=()=>{fresh();$('#obsroot').innerHTML='';render()};
+  $('#cp').onclick=async()=>{ try{await navigator.clipboard.writeText(text);$('#cp').textContent='Copied'}catch(e){const r=document.createRange();r.selectNodeContents($('#logtxt'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('#cp').textContent='Selected, copy it'} };
+}
+
+fresh(); render();
+</script>
+</body></html>
